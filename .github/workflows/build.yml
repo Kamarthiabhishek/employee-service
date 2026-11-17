@@ -1,0 +1,39 @@
+name: Employee Management System
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name : Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Grant Execute permission for maven wrapper
+        run: chmod +x mvnw
+
+      - name: Build and test JAR
+        run: ./mvnw clean package
+
+      - name: Build Docker file
+        run: docker build -t employee-service:latest .
+
+      - name: save docker image to tar archive folder
+        run: docker save employee-service:latest -o employee-service.tar
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: employee-service-image
+          path: employee-service.tar
+          retention-days: 1
+
