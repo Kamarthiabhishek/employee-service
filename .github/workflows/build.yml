@@ -8,6 +8,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: "Abhi@123"
+          MYSQL_DATABASE: ems
+        ports:
+          - 3306:3306
+        options:
+          --health-cmd=
     steps:
       - name : Checkout Repository
         uses: actions/checkout@v4
